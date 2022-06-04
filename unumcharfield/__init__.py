@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from unum                     import Unum, units
+from unumcharfield.unum       import Unum, units
 from unumcharfield.validators import UnumValidationError
 
 # These settings make possible the conversion of strings in Unum objects.
@@ -14,7 +14,7 @@ Unum.UNIT_INDENT  = "*"
 Unum.AUTO_NORM    = True
 Unum.UNIT_POW_SEP = "**"
 # Unum.UNIT_DIV_SEP = None
-# Unum.UNIT_HIDE_EMPTY = True
+Unum.UNIT_HIDE_EMPTY = True
 # Unum.VALUE_FORMAT = "%15.7f"
 # Unum.UNIT_SORTING = True
 
@@ -23,7 +23,6 @@ def str2unum(unum_str):
     # http://stackoverflow.com/questions/13611851/casting-string-to-unit-object-in-python
     # http://lybniz2.sourceforge.net/safeeval.html
     # http://nedbatchelder.com/blog/201206/eval_really_is_dangerous.html
-    
     if isinstance(unum_str, Unum) or unum_str is None:
         return unum_str
     if isinstance(unum_str, str):
