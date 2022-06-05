@@ -6,17 +6,16 @@ from unumcharfield.validators import UnumValidationError
 
 # These settings make possible the conversion of strings in Unum objects.
 # It was necessary modify Unum code to make the conversion possible.
-# It is not recomended edit these settings.
-# 
-Unum.UNIT_SEP     = "*"
-Unum.UNIT_FORMAT  = "%s"
-Unum.UNIT_INDENT  = "*"
-Unum.AUTO_NORM    = True
-Unum.UNIT_POW_SEP = "**"
-# Unum.UNIT_DIV_SEP = None
+# It is not recomended to edit these settings.
+Unum.AUTO_NORM       = True
+Unum.UNIT_DIV_SEP    = "/"
+Unum.UNIT_FORMAT     = "%s"
 Unum.UNIT_HIDE_EMPTY = True
-# Unum.VALUE_FORMAT = "%15.7f"
-# Unum.UNIT_SORTING = True
+Unum.UNIT_INDENT     = "*"
+Unum.UNIT_POW_SEP    = "**"
+Unum.UNIT_SEP        = "*"
+Unum.UNIT_SORTING    = True
+Unum.VALUE_FORMAT    = "%s" # "%15.7f"
 
 def str2unum(unum_str):
     """Convert string to Unum object."""

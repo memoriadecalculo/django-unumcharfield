@@ -247,7 +247,16 @@ class Unum(object):
         """ returns the maximum level of self's units
         """
         return max([0] + [Unum._unitTable[u][1] for u in self._unit.keys()])
-
+    
+    def compatible(self, other):
+        """Return True/False if both Unums have the same units/or not."""
+           
+        try:
+            s, o = self.matchUnits(other)
+            return True
+        except:
+            return False
+    
     def matchUnits(self, other):
         """Return (self, other) where both Unums have the same units.
         
@@ -352,46 +361,46 @@ class Unum(object):
         return Unum(unit, self._value ** other._value)
 
     def __lt__(self, other):
-        if isinstance(other, Unum):
-            s, o = self.matchUnits(Unum.coerceToUnum(other))
-            return s._value < o._value
-        else:
-            return False
+        if self.compatible(other):
+            if isinstance(other, Unum):
+                s, o = self.matchUnits(Unum.coerceToUnum(other))
+                return s._value < o._value
+        return False
 
     def __le__(self, other):
-        if isinstance(other, Unum):
-            s, o = self.matchUnits(Unum.coerceToUnum(other))
-            return s._value <= o._value
-        else:
-            return False
+        if self.compatible(other):
+            if isinstance(other, Unum):
+                s, o = self.matchUnits(Unum.coerceToUnum(other))
+                return s._value <= o._value
+        return False
 
     def __gt__(self, other):
-        if isinstance(other, Unum):
-            s, o = self.matchUnits(Unum.coerceToUnum(other))
-            return s._value > o._value
-        else:
-            return False
+        if self.compatible(other):
+            if isinstance(other, Unum):
+                s, o = self.matchUnits(Unum.coerceToUnum(other))
+                return s._value > o._value
+        return False
 
     def __ge__(self, other):
-        if isinstance(other, Unum):
-            s, o = self.matchUnits(Unum.coerceToUnum(other))
-            return s._value >= o._value
-        else:
-            return False
+        if self.compatible(other):
+            if isinstance(other, Unum):
+                s, o = self.matchUnits(Unum.coerceToUnum(other))
+                return s._value >= o._value
+        return False
 
     def __eq__(self, other):
-        if isinstance(other, Unum):
-            s, o = self.matchUnits(Unum.coerceToUnum(other))
-            return s._value == o._value
-        else:
-            return False
+        if self.compatible(other):
+            if isinstance(other, Unum):
+                s, o = self.matchUnits(Unum.coerceToUnum(other))
+                return s._value == o._value
+        return False
 
     def __ne__(self, other):
         if isinstance(other, Unum):
-            s, o = self.matchUnits(Unum.coerceToUnum(other))
-            return s._value != o._value
-        else:
-            return False
+            if self.compatible(other):
+                s, o = self.matchUnits(Unum.coerceToUnum(other))
+                return s._value != o._value
+        return False
     
     def __abs__(self):
         return Unum(self._unit.copy(), abs(self._value)) 

@@ -4,16 +4,20 @@
 from django.core.exceptions   import ValidationError
 from django.utils.deconstruct import deconstructible
 from django.utils.translation import gettext_lazy as _
-from unumcharfield.unum       import Unum, units
+from unumcharfield.unum       import Unum
+
+messages = {
+            'invalid'     : _('Enter an Unum Object.'),
+            'incompatible': _('%(other_unit)s is not compatible with %(valid_unit)s.'),
+            }
 
 class UnumValidationError(ValidationError):
     """
     Unum Validation Error.
     """
-    message = _('Enter a Unum Object.')
     
-    def __init__(self, message=message, code=None, params=None):
-        super().__init__(message, code, params)
+    def __init__(self, message='invalid', params=None):
+        super().__init__(message=messages[message], code=message, params=params)
 
 @deconstructible
 class UnumValidator:
@@ -27,40 +31,28 @@ class UnumValidator:
     def __call__(self, value):
         if not isinstance(value, Unum):
             raise UnumValidationError()
+        return value
     
     def __eq__(self, other):
-        return (isinstance(other, self.__class__))
+        return isinstance(other, self.__class__)
 
 @deconstructible
-class UnumDimensionValidator(UnumValidator):
+class UnumCompatibilityValidator(UnumValidator):
     """
-    Validate if the input has the same Unum dimension, otherwise raise UnumValidationError.
+    Validate if the input has the same Unum unit type (length, mass, etc),
+    otherwise raise UnumValidationError.
     """
-    messages = {
-        'invalid': _('Enter a Unum Object.'),
-        'dimension': _(
-            'Ensure dimension is equal than %(dim).',
-            'Ensure dimension is equal than %(dim).',
-            'dim'
-        ),
-    }
-     
-    def __init__(self, dimension=None, **kwargs):
-        self.dimension = dimension
+    
+    def __init__(self, valid_unit=None, **kwargs):
+        self.valid_unit = super().__call__(valid_unit)
         super().__init__(**kwargs)
-     
+    
     def __call__(self, value):
         super().__call__(value)
-        if dimsys_SI.equivalent_dims(self.dimension, value):
-            raise ValidationError(
-                self.messages['dimension'],
-                code='dimension',
-                params={'dim': (self.dimension)},
-            )
- 
+        if not self.valid_unit.compatible(value):
+            raise UnumValidationError('incompatible',
+                                      params={'valid_unit': self.valid_unit, 'other_unit': value})
+        return value
+    
     def __eq__(self, other):
-        return (
-            super().__eq__(other) and
-            self.dimension == other.dimension
-        )
-
+        return self.valid_unit == other.valid_unit
